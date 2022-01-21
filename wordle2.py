@@ -1,11 +1,25 @@
-from nltk.corpus import words
-word_list = words.words()
-print(len(word_list))
 from string import ascii_lowercase as alphabet
 from random import choice
-#word_list = ["happy", "spire", "point", "print", "doggy"]
+from itertools import permutations
+from tqdm import tqdm
+from heapq import *
 
-exclude_words = set(["dhoul", "essie", "assis", "braham", "beman", "humbo", "biham", "unhot", "domer", "rexen", "reneg", "breek", "neger", "reese", "meece", "meese", "hamel", "esere", "pombo", "wramp", "whamp", "scind", "teasy", "casey", "smoos", "byron", "myron", "benda", "buddh", "dubhe", "bolti", "serta", "tarse", "chiot", "islot", "cordy", "todus", "bibio", "samir", "tarin", "ranty", "coony", "boily", "coiny", "doigt", "piotr", "moity", "raiae", "sairy", "barie", "tarie", "sinae", "sadie", "saite", "aueto", "aoife", "kioea", "heiau", "ouabe", "toity", "conoy", "solea"])
+#word_list = ["happy", "spire", "point", "print", "doggy"]
+# -------------- 
+# Load Documents
+# --------------
+word_list = set()
+with open("words.txt", "r") as f:
+    data = f.read().split()
+    word_list = set(data)
+    f.close()
+
+exclude_words = set()
+with open("exclude.txt", "r") as f:
+    data = f.read().replace("\n", " ").split()
+    exclude_words = set(data)
+    f.close()
+
 # ----------------
 # Preprocess Words
 # ----------------
@@ -25,12 +39,13 @@ for word in word_list:
         position_sets[pos][i].add(word)
 
 all_words = all_words.difference(exclude_words)
+
 # ---------------------------------------------------------
 # Elimate Words because they include/don't include a letter
 # ---------------------------------------------------------
-green = "*****"
-yellow = "re" # set of characters
-guesses = ["raise"]
+green = "*ro*e"
+yellow = "t" # set of characters
+guesses = ["raise", "court", "trope"]
 words_left = all_words
 move = len(guesses)
 
@@ -57,7 +72,17 @@ for word in guesses:
         elif (not char in green and not char in yellow):
             words_left = words_left.difference(list_of_sets[i])
 
+for char in set(yellow).intersection(set(green)): # Remove Doubles
+    i = ord(char) - ord('a')
+    doubles = set()
+    for idx in range(5):
+        for idx2 in range(idx+1, 5):
+            temp = position_sets[idx][i].intersection(positions_sets[idx2][i])
+            doubles = doubles.union(temp)
+    words_left = words_left.intersection(doubles)
+
 print("words_left: ", len(words_left))
+
 
 # -----------------
 # Postprocess Words
@@ -71,15 +96,6 @@ for word in words_left:
         positions_in_word[pos][i].add(word)
 
 
-# REMOVE DOUBLES
-for char in set(yellow).intersection(set(green)):
-    i = ord(char) - ord('a')
-    doubles = set()
-    for idx in range(5):
-        for idx2 in range(idx+1, 5):
-            temp = positions_in_word[idx][i].intersection(positions_in_word[idx2][i])
-            doubles = doubles.union(temp)
-    words_left = words_left.intersection(doubles)
 
 # ------------------
 # Find the Best Word
@@ -88,16 +104,16 @@ best_word = []
 best_score = float('inf') 
 
 
-
 set_of_words = all_words
 if move > 1:
     set_of_words = words_left
 
 
 
-from itertools import permutations
-from tqdm import tqdm
 temp = "000001111122222"
+all_scores = []
+heapify(all_scores)
+
 for word in tqdm(set_of_words):
     ternary = permutations(temp, 5)
     outcomes = []
@@ -120,8 +136,15 @@ for word in tqdm(set_of_words):
                 worst_case = worst_case.intersection(yellow_words)
         outcomes.append(len(worst_case)**2)
     score = sum(outcomes)
-
+    
+    # ------------------
     # Keep Track of Best
+    # ------------------
+    if (len(all_scores) < 10):
+        heappush(all_scores, (-1*score, word))
+    elif (-1* score > all_scores[0][0]):
+        heapreplace(all_scores, (-1*score, word))
+
     if (score < best_score):
         best_word = [word]
         best_score = score
@@ -129,6 +152,7 @@ for word in tqdm(set_of_words):
         best_word.append(word)
 
 print(f"----------------------------------\nTHE BEST WORD: {choice(best_word)} \nExpected Number of Returns: {best_score/len(words_left)}\n----------------------------------")
-print(best_word)
+print("Equivalent Words: ", best_word)
+print("Other Options: ", list(map(lambda x: ("{:.2f}".format(-1*x[0] / len(words_left)), x[1]), all_scores)))
 if (len(words_left) < 20):
-    print(words_left)
+    print("Words Left: ", words_left)
