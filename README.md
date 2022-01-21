@@ -1,2 +1,2 @@
 # Wordle
-Beating the online game wordle
+Beating the online game wordle.
