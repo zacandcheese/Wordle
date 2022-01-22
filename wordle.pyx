@@ -194,3 +194,5 @@ def wordle(str green, str yellow, list guesses):
     print("Other Options: ", list(map(lambda x: ("{:.2f}".format(-1*x[0] / len(words_left)), x[1]), all_scores)))
     if (len(words_left) < 20):
         print("Words Left: ", words_left)
+
+

@@ -4032,6 +4032,7 @@ static PyObject *__pyx_pf_6wordle_2wordle(CYTHON_UNUSED PyObject *__pyx_self, Py
  *     print("Other Options: ", list(map(lambda x: ("{:.2f}".format(-1*x[0] / len(words_left)), x[1]), all_scores)))
  *     if (len(words_left) < 20):             # <<<<<<<<<<<<<<
  *         print("Words Left: ", words_left)
+ * 
  */
   __pyx_t_12 = __pyx_cur_scope->__pyx_v_words_left;
   __Pyx_INCREF(__pyx_t_12);
@@ -4048,6 +4049,8 @@ static PyObject *__pyx_pf_6wordle_2wordle(CYTHON_UNUSED PyObject *__pyx_self, Py
  *     print("Other Options: ", list(map(lambda x: ("{:.2f}".format(-1*x[0] / len(words_left)), x[1]), all_scores)))
  *     if (len(words_left) < 20):
  *         print("Words Left: ", words_left)             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
     __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 196, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
@@ -4067,6 +4070,7 @@ static PyObject *__pyx_pf_6wordle_2wordle(CYTHON_UNUSED PyObject *__pyx_self, Py
  *     print("Other Options: ", list(map(lambda x: ("{:.2f}".format(-1*x[0] / len(words_left)), x[1]), all_scores)))
  *     if (len(words_left) < 20):             # <<<<<<<<<<<<<<
  *         print("Words Left: ", words_left)
+ * 
  */
   }
 
