@@ -43,9 +43,9 @@ all_words = all_words.difference(exclude_words)
 # ---------------------------------------------------------
 # Elimate Words because they include/don't include a letter
 # ---------------------------------------------------------
-green = "*ro*e"
-yellow = "t" # set of characters
-guesses = ["raise", "court", "trope"]
+green = "*****"
+yellow = "" # set of characters
+guesses = ["raise"]
 words_left = all_words
 move = len(guesses)
 
@@ -114,6 +114,8 @@ temp = "000001111122222"
 all_scores = []
 heapify(all_scores)
 
+from time import time
+start = time()
 for word in tqdm(set_of_words):
     ternary = permutations(temp, 5)
     outcomes = []
@@ -150,7 +152,7 @@ for word in tqdm(set_of_words):
         best_score = score
     elif (score == best_score):
         best_word.append(word)
-
+print(time() - start)
 print(f"----------------------------------\nTHE BEST WORD: {choice(best_word)} \nExpected Number of Returns: {best_score/len(words_left)}\n----------------------------------")
 print("Equivalent Words: ", best_word)
 print("Other Options: ", list(map(lambda x: ("{:.2f}".format(-1*x[0] / len(words_left)), x[1]), all_scores)))
